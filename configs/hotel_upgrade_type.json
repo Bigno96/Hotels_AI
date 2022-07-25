@@ -1,0 +1,10 @@
+{
+    "none":-1,
+    "main_building":0,
+    "I_dependance":1,
+    "II_dependance":2,
+    "III_dependance":3,
+    "IV_dependance":4,
+    "facilities":5
+}
+
