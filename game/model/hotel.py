@@ -22,7 +22,11 @@ class Hotel:
         """
         self.__name: str = name
         self.__hotel_config: EasyDict = config.hotel_dict[name]
-        self.__hotel_upgrade_type_dict: EasyDict = config.hotel_upgrade_type_dict
+        self.__hotel_upgrade_type_dict: EasyDict[str:int] = config.hotel_upgrade_type_dict
+        self.__hotel_upgrade_type_dict_reverse: dict[int:str] = {  # reverse dictionary for easier access on repr
+            value:key
+            for key, value in self.__hotel_upgrade_type_dict.items()
+        }
         self.__owner: str or None = None
         self.__star_level: int = 0
         self.__last_upgrade_idx: int = -1      # keep track of last upgrade
@@ -34,40 +38,36 @@ class Hotel:
         return hash(self.__name)
 
     def __repr__(self):
-        h = self.__hotel_config
+        hotel_cfg = self.__hotel_config
 
         # get and format last upgrade performed as a string
-        i = self.__last_upgrade_idx
-        last_upgrade = [key
-                        for key, value
-                        in self.__hotel_upgrade_type_dict.items()
-                        if value == i][0]  # extract first item
+        last_upgrade = self.__hotel_upgrade_type_dict_reverse[self.__last_upgrade_idx]
 
         # table for payments
-        p = PrettyTable()
-        p.field_names = ['1 night', '2 night', '3 night', '4 night', '5 night', '6 night']
-        for row in h.payments:
-            p.add_row(row)
-        p.border = False
-        p.left_padding_width = 8
+        table = PrettyTable()
+        table.field_names = ['1 night', '2 night', '3 night', '4 night', '5 night', '6 night']
+        for row in hotel_cfg.payments:
+            table.add_row(row)
+        table.border = False
+        table.left_padding_width = 8
 
         _repr = (
             f'{self.__name}\n'
             f'\tOwner: {self.__owner}\n'
             f'\t{self.__star_level} star\n'
             f'\tLast upgrade: {last_upgrade}\n'
-            f'\tLand cost: {h.land_cost}\n'
-            f'\tExpropriation price: {h.expropriation_price}\n'
-            f'\tEntrance cost: {h.entrance_cost}\n'
+            f'\tLand cost: {hotel_cfg.land_cost}\n'
+            f'\tExpropriation price: {hotel_cfg.expropriation_price}\n'
+            f'\tEntrance cost: {hotel_cfg.entrance_cost}\n'
             f'\tCosts:\n'
-            f'\t\tmain_building: {h.costs.main_building}\n'
-            f'\t\tI_dependance: {h.costs.I_dependance}\n'
-            f'\t\tII_dependance: {h.costs.II_dependance}\n'
-            f'\t\tIII_dependance: {h.costs.III_dependance}\n'
-            f'\t\tIV_dependance: {h.costs.IV_dependance}\n'
-            f'\t\tfacilities: {h.costs.facilities}\n'
+            f'\t\tmain_building: {hotel_cfg.costs.main_building}\n'
+            f'\t\tI_dependance: {hotel_cfg.costs.I_dependance}\n'
+            f'\t\tII_dependance: {hotel_cfg.costs.II_dependance}\n'
+            f'\t\tIII_dependance: {hotel_cfg.costs.III_dependance}\n'
+            f'\t\tIV_dependance: {hotel_cfg.costs.IV_dependance}\n'
+            f'\t\tfacilities: {hotel_cfg.costs.facilities}\n'
             f'\tpayments:\n'
-            f'{p}\n'
+            f'{table}\n'
         )
         return _repr
 
@@ -84,12 +84,12 @@ class Hotel:
         return self.__owner
 
     def set_owner(self,
-                  p: str
+                  player_name: str
                   ) -> None:
         """
-        :param p: name of the player who is currently owning the hotel
+        :param player_name: name of the player who is currently owning the hotel
         """
-        self.__owner = p
+        self.__owner = player_name
 
     def free_property(self) -> None:
         """

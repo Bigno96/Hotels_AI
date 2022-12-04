@@ -8,73 +8,73 @@ import game.view.player_interface as i_f
 class PlayerTest(unittest.TestCase):
 
     def test_init(self):
-        human_p = player.HumanPlayer(name='human')
-        ai_p = player.AiPlayer(name='AI')
+        human_pl = player.HumanPlayer(name='human')
+        ai_pl = player.AiPlayer(name='AI')
 
         human_copy = player.HumanPlayer(name='human')
 
-        self.assertEqual(human_p.get_name(), 'human')
-        self.assertEqual(ai_p.get_name(), 'AI')
+        self.assertEqual(human_pl.get_name(), 'human')
+        self.assertEqual(ai_pl.get_name(), 'AI')
 
-        self.assertEqual(human_p, human_copy)
-        self.assertNotEqual(ai_p, human_p)
+        self.assertEqual(human_pl, human_copy)
+        self.assertNotEqual(ai_pl, human_pl)
 
-        self.assertIsInstance(human_p.get_ui(), i_f.HumanInterface)
-        self.assertIsInstance(ai_p.get_ui(), i_f.AiInterface)
+        self.assertIsInstance(human_pl.get_ui(), i_f.HumanInterface)
+        self.assertIsInstance(ai_pl.get_ui(), i_f.AiInterface)
 
     @staticmethod
     def test_print():
-        human_p = player.HumanPlayer(name='human')
-        ai_p = player.AiPlayer(name='AI')
-        print(human_p)
-        print(ai_p)
+        human_pl = player.HumanPlayer(name='human')
+        ai_pl = player.AiPlayer(name='AI')
+        print(human_pl)
+        print(ai_pl)
 
     def test_hash_eq(self):
-        human_p = player.HumanPlayer(name='human')
-        ai_p = player.AiPlayer(name='AI')
+        human_pl = player.HumanPlayer(name='human')
+        ai_pl = player.AiPlayer(name='AI')
         human_copy = player.HumanPlayer(name='human')
         ai_copy = player.HumanPlayer(name='AI')
 
-        self.assertEqual(human_p, human_copy)
-        self.assertEqual(ai_p, ai_copy)
-        self.assertNotEqual(human_p, ai_p)
+        self.assertEqual(human_pl, human_copy)
+        self.assertEqual(ai_pl, ai_copy)
+        self.assertNotEqual(human_pl, ai_pl)
 
-        self.assertEqual(hash(human_p), hash(human_copy))
-        self.assertEqual(hash(ai_p), hash(ai_copy))
-        self.assertNotEqual(hash(human_p), hash(ai_p))
+        self.assertEqual(hash(human_pl), hash(human_copy))
+        self.assertEqual(hash(ai_pl), hash(ai_copy))
+        self.assertNotEqual(hash(human_pl), hash(ai_pl))
 
     def test_money(self):
-        p = player.HumanPlayer(name='test')
+        pl = player.HumanPlayer(name='test_player')
 
-        self.assertEqual(p.get_money(), 12000)  # init value
+        self.assertEqual(pl.get_money(), 12000)  # init value
 
-        p.change_money(amount=1000)
-        self.assertEqual(p.get_money(), 13000)  # 12000 + 1000
+        pl.change_money(amount=1000)
+        self.assertEqual(pl.get_money(), 13000)  # 12000 + 1000
 
-        p.change_money(amount=-3000)
-        self.assertEqual(p.get_money(), 10000)  # 13000 - 3000
+        pl.change_money(amount=-3000)
+        self.assertEqual(pl.get_money(), 10000)  # 13000 - 3000
 
-        self.assertFalse(p.is_broke())
+        self.assertFalse(pl.is_broke())
 
-        p.change_money(amount=-10000)
-        self.assertTrue(p.is_broke())
+        pl.change_money(amount=-10000)
+        self.assertTrue(pl.is_broke())
 
     def test_property(self):
-        p = player.HumanPlayer(name='test')
+        pl = player.HumanPlayer(name='test_player')
 
-        self.assertFalse(p.get_property_list())
+        self.assertFalse(pl.get_property_list())
 
-        h = mock.Mock()
+        hotel = mock.Mock()
+        hotel.get_name.return_value = 'test_hotel'
 
-        self.assertFalse(p.remove_property(h=h))
+        pl.remove_property(h=hotel)
+        self.assertFalse(pl.get_property_list())
 
-        p.add_property(h=h)
-        self.assertIn(h, p.get_property_list())
+        pl.add_property(h=hotel)
+        self.assertIn(hotel, pl.get_property_list().values())
 
-        self.assertTrue(p.remove_property(h=h))
-        self.assertFalse(p.get_property_list())
-
-        self.assertFalse(p.remove_property(h=h))
+        pl.remove_property(h=hotel)
+        self.assertFalse(pl.get_property_list())
 
 
 if __name__ == '__main__':

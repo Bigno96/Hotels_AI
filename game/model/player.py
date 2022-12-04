@@ -21,7 +21,7 @@ class Player(ABC):
         """
         self.__name = name
         self.__money = 12000    # standard start of the game
-        self.__property_list: list[hotel.Hotel or None] = list()
+        self.__property_list: dict[str:hotel.Hotel] = dict()
 
     def __eq__(self, other):
         return self.__name == other.get_name()
@@ -57,7 +57,7 @@ class Player(ABC):
         """
         :return: True if the player has no more money left
         """
-        return self.__money == 0
+        return self.__money <= 0
 
     def change_money(self,
                      amount: int
@@ -67,7 +67,7 @@ class Player(ABC):
         """
         self.__money += amount
 
-    def get_property_list(self) -> list[hotel.Hotel or None]:
+    def get_property_list(self) -> dict[str:hotel.Hotel]:
         return self.__property_list
 
     def add_property(self,
@@ -76,21 +76,16 @@ class Player(ABC):
         """
         :param h: hotel to add as a player property
         """
-        self.__property_list.append(h)
+        self.__property_list[h.get_name()] = h
 
     def remove_property(self,
                         h: hotel.Hotel
-                        ) -> bool:
+                        ) -> None:
         """
         :param h: hotel to remove from player's properties
-        :return True if the property was found and successfully removed
-                False else
         """
-        try:
-            self.__property_list.remove(h)
-            return True
-        except ValueError:
-            return False
+        if h.get_name() in self.__property_list.keys():
+            del self.__property_list[h.get_name()]
 
 
 class HumanPlayer(Player):

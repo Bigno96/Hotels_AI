@@ -8,9 +8,7 @@ import random
 import game.model.hotel as hotel
 import utils.config as cfg
 
-HOTEL_JSON_PATH = 'D:\Hotels_AI\configs\hotel.json'
-HOTEL_UPGRADE_TYPE_JSON_PATH = 'D:\Hotels_AI\configs\hotel_upgrade_type.json'
-HOTEL_NAMES = ['Waikiki', 'Taj_Mahal', 'Fujiyama', 'Etoile', 'Royal', 'Safari', 'President', 'Boomerang']
+from unit_testing import HOTEL_JSON_PATH, HOTEL_NAMES, HOTEL_UPGRADE_TYPE_JSON_PATH
 
 
 class HotelTest(unittest.TestCase):
@@ -61,7 +59,7 @@ class HotelTest(unittest.TestCase):
         # mocking Player instance
         player = 'test'
 
-        h.set_owner(p=player)
+        h.set_owner(player_name=player)
         self.assertEqual(h.get_owner(), 'test')
 
         h.free_property()

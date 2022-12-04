@@ -9,8 +9,7 @@ import game.model.cell as cell
 import utils.config as cfg
 
 from random import randint
-
-CELL_JSON_PATH = "D:/Hotels_AI/configs/cell.json"
+from unit_testing import CELL_JSON_PATH
 
 
 class CellTest(unittest.TestCase):

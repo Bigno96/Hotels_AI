@@ -8,11 +8,11 @@ import utils.config as cfg
 import game.model.player as pl
 import game.model.board as brd
 
-from typing import List
 from easydict import EasyDict
-from random import randint
+from random import sample, randint
 
-CELL_JSON_PATH = "D:/Hotels_AI/configs/cell.json"
+from unit_testing import CELL_JSON_PATH
+
 PLAYER_COUNT = 4
 REPETITION = 1000
 
@@ -22,7 +22,8 @@ class BoardTest(unittest.TestCase):
     def test_board_cell(self):
         config = EasyDict()
         config.cell_dict = cfg.get_config_from_json(CELL_JSON_PATH)
-        player_list = create_player_list(n_players=PLAYER_COUNT)
+        player_list = create_player_list(n_players=PLAYER_COUNT,
+                                         player_type='human')   # doesn't matter type
 
         board = brd.Board(config=config,
                           player_list=player_list)
@@ -36,7 +37,8 @@ class BoardTest(unittest.TestCase):
         for _ in range(REPETITION):
             config = EasyDict()
             config.cell_dict = cfg.get_config_from_json(CELL_JSON_PATH)
-            player_list = create_player_list(n_players=PLAYER_COUNT)
+            player_list = create_player_list(n_players=PLAYER_COUNT,
+                                             player_type='human')   # doesn't matter type
 
             board = brd.Board(config=config,
                               player_list=player_list)
@@ -47,7 +49,7 @@ class BoardTest(unittest.TestCase):
                                  board.find_player_pos(p).get_id())
 
             '''move agent'''
-            p = player_list[randint(0, PLAYER_COUNT-1)] # both extremes included
+            p = sample(player_list, k=1)[0]
             dest = board.find_cell(cell_id=randint(0, 30))
             delta = randint(0, 6)
 
@@ -83,22 +85,29 @@ class BoardTest(unittest.TestCase):
                               lambda: board.move_player(p=p,
                                                         dest=None,
                                                         delta=3))
+
+            '''not existing cells'''
             self.assertRaises(IndexError,
                               lambda: board.find_cell(cell_id=31))
             self.assertRaises(IndexError,
                               lambda: board.find_cell(cell_id=-3))
 
 
-def create_player_list(n_players: int
-                       ) -> List[pl.Player]:
+def create_player_list(n_players: int,
+                       player_type: str,
+                       ) -> list[pl.Player]:
     """
     Instantiate a list of players
     :param n_players: number of players
+    :param player_type: 'human' or 'AI'
     :return: list of players
     """
-    player_list = []
-    for i in range(n_players):
-        player_list.append(pl.Player(name=str(i)))
+    if player_type.lower() == 'human':
+        player_list = [pl.HumanPlayer(name=str(i))
+                       for i in range(n_players)]
+    else:
+        player_list = [pl.AiPlayer(name=str(i))
+                       for i in range(n_players)]
 
     return player_list
 

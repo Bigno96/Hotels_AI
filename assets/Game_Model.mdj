@@ -1424,7 +1424,7 @@
 											"top": 1091,
 											"width": 200.509765625,
 											"height": 13,
-											"text": "-player_list: list<Player>",
+											"text": "-player_list: dict{str-Player}",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1458,7 +1458,7 @@
 											"top": 1121,
 											"width": 200.509765625,
 											"height": 13,
-											"text": "-hotel_list: list<Hotel>",
+											"text": "-hotel_list: dict{str-Hotel}",
 											"horizontalAlignment": 0
 										}
 									],
@@ -1577,7 +1577,7 @@
 											"top": 1219,
 											"width": 200.509765625,
 											"height": 13,
-											"text": "+get_player_list(): list<Player>",
+											"text": "+get_player_list(): set<Player>",
 											"horizontalAlignment": 0
 										}
 									],
@@ -1809,7 +1809,7 @@
 											"top": 1040,
 											"width": 322.63232421875,
 											"height": 13,
-											"text": "-property_list: list<Hotel> = None",
+											"text": "-property_list: dict{str-Hotel} = None",
 											"horizontalAlignment": 0
 										}
 									],
@@ -1945,7 +1945,7 @@
 											"top": 1153,
 											"width": 322.63232421875,
 											"height": 13,
-											"text": "+get_property_list(): list<Hotel>",
+											"text": "+get_property_list(): dict{str-Hotel}",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2510,7 +2510,7 @@
 											"top": 1387,
 											"width": 318.30322265625,
 											"height": 13,
-											"text": "-cell_list: list<Cell>",
+											"text": "-cell_list: dict{int-Cell}",
 											"horizontalAlignment": 0
 										},
 										{
@@ -12918,7 +12918,7 @@
 													"left": 626,
 													"top": 386,
 													"width": 76,
-													"height": 13,
+													"height": 26,
 													"text": "Parse Config",
 													"wordWrap": true
 												}
@@ -13078,7 +13078,7 @@
 													"left": 626,
 													"top": 506,
 													"width": 76,
-													"height": 13,
+													"height": 26,
 													"text": "Create Game",
 													"wordWrap": true
 												}
@@ -13871,7 +13871,7 @@
 							},
 							"name": "player_list",
 							"visibility": "private",
-							"type": "list<Player>"
+							"type": "dict{str-Player}"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -13891,7 +13891,7 @@
 							},
 							"name": "hotel_list",
 							"visibility": "private",
-							"type": "list<Hotel>"
+							"type": "dict{str-Hotel}"
 						}
 					],
 					"operations": [
@@ -14032,7 +14032,7 @@
 									"_parent": {
 										"$ref": "AAAAAAF9m8GL/qQfzZ8="
 									},
-									"type": "list<Player>",
+									"type": "set<Player>",
 									"direction": "return"
 								}
 							]
@@ -14118,7 +14118,7 @@
 							},
 							"name": "property_list",
 							"visibility": "private",
-							"type": "list<Hotel>",
+							"type": "dict{str-Hotel}",
 							"defaultValue": "None"
 						}
 					],
@@ -14251,7 +14251,7 @@
 									"_parent": {
 										"$ref": "AAAAAAF9ctq6+YH3ASE="
 									},
-									"type": "list<Hotel>",
+									"type": "dict{str-Hotel}",
 									"direction": "return"
 								}
 							]
@@ -14468,7 +14468,7 @@
 							},
 							"name": "cell_list",
 							"visibility": "private",
-							"type": "list<Cell>"
+							"type": "dict{int-Cell}"
 						},
 						{
 							"_type": "UMLAttribute",
