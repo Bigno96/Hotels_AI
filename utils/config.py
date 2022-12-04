@@ -11,6 +11,7 @@ CELL_TYPE_JSON_PATH = 'configs/cell_type.json'
 HOTEL_JSON_PATH = 'configs/hotel.json'
 HOTEL_UPGRADE_TYPE_JSON_PATH = 'configs/hotel_upgrade_type.json'
 
+
 def get_config_from_json(json_file: str
                          ) -> EasyDict:
     """
@@ -29,6 +30,7 @@ def get_config_from_json(json_file: str
         except ValueError:
             print('INVALID JSON file format.. Please provide a good json file')
             exit(-1)
+
 
 def process_config(args) -> EasyDict:
     """

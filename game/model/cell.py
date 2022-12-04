@@ -5,7 +5,6 @@ Contains Cell class and all methods to manipulate a cell instance
 import game.model.hotel as hotel
 
 from easydict import EasyDict
-from typing import List, Optional
 
 
 class Cell:
@@ -23,16 +22,30 @@ class Cell:
         :param config: global config dictionary
         """
         self.__id: int = ID
+        self.__config = config
 
         cell = config.cell_dict[str(ID)]
         self.__type: int = cell.type
-        self.__hotels_near: List[str] = cell.hotels_near
+        self.__hotels_near: list[str] = cell.hotels_near
 
-        self.__hotel_entrance: Optional[hotel.Hotel] = None
+        self.__hotel_entrance: hotel.Hotel or None = None
         self.__occupied: bool = False
 
     def __eq__(self, other):
         return self.__id == other.get_id()
+
+    def __hash__(self):
+        return hash(self.__id)
+
+    def __repr__(self):
+        _repr = (
+            f'Cell: {self.__id}\n'
+            f'\tType: {self.__config.cell_type_dict[str(self.__type)]}\n'
+            f'\tHotels Near: {self.__hotels_near}\n'
+            f'\tHotel Entrance: {self.__hotel_entrance}\n'
+            f'\tOccupied: {self.__occupied}'
+        )
+        return _repr
 
     def get_id(self) -> int:
         """
@@ -46,13 +59,13 @@ class Cell:
         """
         return self.__type
 
-    def get_hotels_near(self) -> List[str]:
+    def get_hotels_near(self) -> list[str]:
         """
         :return: list of Hotel names that are adjacent to the cell
         """
         return self.__hotels_near
 
-    def get_entrance(self) -> Optional[hotel.Hotel]:
+    def get_entrance(self) -> hotel.Hotel or None:
         """
         :return: None if no entrance, else the Hotel object which has entrance on the cell
         """

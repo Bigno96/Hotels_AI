@@ -22,8 +22,29 @@ class PlayerTest(unittest.TestCase):
         self.assertIsInstance(human_p.get_ui(), i_f.HumanInterface)
         self.assertIsInstance(ai_p.get_ui(), i_f.AiInterface)
 
+    @staticmethod
+    def test_print():
+        human_p = player.HumanPlayer(name='human')
+        ai_p = player.AiPlayer(name='AI')
+        print(human_p)
+        print(ai_p)
+
+    def test_hash_eq(self):
+        human_p = player.HumanPlayer(name='human')
+        ai_p = player.AiPlayer(name='AI')
+        human_copy = player.HumanPlayer(name='human')
+        ai_copy = player.HumanPlayer(name='AI')
+
+        self.assertEqual(human_p, human_copy)
+        self.assertEqual(ai_p, ai_copy)
+        self.assertNotEqual(human_p, ai_p)
+
+        self.assertEqual(hash(human_p), hash(human_copy))
+        self.assertEqual(hash(ai_p), hash(ai_copy))
+        self.assertNotEqual(hash(human_p), hash(ai_p))
+
     def test_money(self):
-        p = player.Player(name='test')
+        p = player.HumanPlayer(name='test')
 
         self.assertEqual(p.get_money(), 12000)  # init value
 
@@ -39,7 +60,7 @@ class PlayerTest(unittest.TestCase):
         self.assertTrue(p.is_broke())
 
     def test_property(self):
-        p = player.Player(name='test')
+        p = player.HumanPlayer(name='test')
 
         self.assertFalse(p.get_property_list())
 

@@ -10,6 +10,7 @@ Main execution file for HOTEL AI
 import argparse
 from utils.config import process_config
 
+
 def main():
     """
     Main function

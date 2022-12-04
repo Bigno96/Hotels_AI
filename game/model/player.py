@@ -5,8 +5,7 @@ Contains Player class and all methods to interact with a player
 import game.view.player_interface as i_f
 import game.model.hotel as hotel
 
-from abc import ABC
-from typing import List, Optional
+from abc import ABC, abstractmethod
 
 
 class Player(ABC):
@@ -21,24 +20,35 @@ class Player(ABC):
         :param name: unique id of the player
         """
         self.__name = name
-        self.__ui = self.make_interface()
         self.__money = 12000    # standard start of the game
-        self.__property_list: List[Optional[hotel.Hotel]] = list()
+        self.__property_list: list[hotel.Hotel or None] = list()
 
     def __eq__(self, other):
         return self.__name == other.get_name()
 
-    def make_interface(self) -> i_f.PlayerInterface:
+    def __hash__(self):
+        return hash(self.__name)
+
+    @abstractmethod
+    def __repr__(self) -> str:
+        """
+        :return: internal representation of the object
+        """
+
+    @abstractmethod
+    def set_interface(self) -> i_f.PlayerInterface:
         """
         Set up interface based on the type of the Player
         """
-        return i_f.PlayerInterface()
 
     def get_name(self) -> str:
         return self.__name
 
+    @abstractmethod
     def get_ui(self) -> i_f.PlayerInterface:
-        return self.__ui
+        """
+        :return: User Interface
+        """
 
     def get_money(self) -> int:
         return self.__money
@@ -57,7 +67,7 @@ class Player(ABC):
         """
         self.__money += amount
 
-    def get_property_list(self) -> List[Optional[hotel.Hotel]]:
+    def get_property_list(self) -> list[hotel.Hotel or None]:
         return self.__property_list
 
     def add_property(self,
@@ -88,8 +98,25 @@ class HumanPlayer(Player):
     Human player instance with correct interface
     """
 
-    def make_interface(self) -> i_f.PlayerInterface:
+    def __init__(self,
+                 name: str):
+        super(HumanPlayer, self).__init__(name=name)
+        self.__ui = self.set_interface()
+
+    def set_interface(self) -> i_f.PlayerInterface:
         return i_f.HumanInterface()
+
+    def get_ui(self) -> i_f.PlayerInterface:
+        return self.__ui
+
+    def __repr__(self) -> str:
+        _repr = (
+            f'Player: {self.get_name()}\n'
+            f'\tType: Human\n'
+            f'\tMoney: {self.get_money()}\n'
+            f'\tProperty List: {self.get_property_list()}'
+        )
+        return _repr
 
 
 class AiPlayer(Player):
@@ -97,5 +124,22 @@ class AiPlayer(Player):
     AI player instance with correct interface
     """
 
-    def make_interface(self) -> i_f.PlayerInterface:
+    def __init__(self,
+                 name: str):
+        super(AiPlayer, self).__init__(name=name)
+        self.__ui = self.set_interface()
+
+    def set_interface(self) -> i_f.PlayerInterface:
         return i_f.AiInterface()
+
+    def get_ui(self) -> i_f.PlayerInterface:
+        return self.__ui
+
+    def __repr__(self) -> str:
+        _repr = (
+            f'Player: {self.get_name()}\n'
+            f'\tType: AI\n'
+            f'\tMoney: {self.get_money()}\n'
+            f'\tProperty List: {self.get_property_list()}'
+        )
+        return _repr

@@ -8,8 +8,6 @@ import random
 import game.model.hotel as hotel
 import utils.config as cfg
 
-from easydict import EasyDict
-
 HOTEL_JSON_PATH = 'D:\Hotels_AI\configs\hotel.json'
 HOTEL_UPGRADE_TYPE_JSON_PATH = 'D:\Hotels_AI\configs\hotel_upgrade_type.json'
 HOTEL_NAMES = ['Waikiki', 'Taj_Mahal', 'Fujiyama', 'Etoile', 'Royal', 'Safari', 'President', 'Boomerang']
@@ -36,6 +34,23 @@ class HotelTest(unittest.TestCase):
             self.assertEqual(h.get_expropriation_price(), h_json.expropriation_price)
             self.assertEqual(h.get_entrance_cost(), h_json.entrance_cost)
 
+    @staticmethod
+    def test_print():
+        name = random.choice(HOTEL_NAMES)
+        h = set_hotel(name=name)
+        print(h)
+
+    def test_hash_eq(self):
+        name1, name2 = random.sample(HOTEL_NAMES, k=2)
+        h1 = set_hotel(name=name1)
+        h1_copy = set_hotel(name=name1)
+        h2 = set_hotel(name=name2)
+
+        self.assertEqual(h1, h1_copy)
+        self.assertNotEqual(h1, h2)
+
+        self.assertEqual(hash(h1), hash(h1_copy))
+        self.assertNotEqual(hash(h1), hash(h2))
 
     def test_owner(self):
         name = random.choice(HOTEL_NAMES)
@@ -110,20 +125,6 @@ class HotelTest(unittest.TestCase):
             self.assertEqual(h.get_payments()[star_level-1][nights-1],
                              h_json.payments[star_level-1][nights-1])
 
-    def test_eq(self):
-        name = random.choice(HOTEL_NAMES)
-        h1 = set_hotel(name=name)
-        h2 = set_hotel(name=name)
-
-        self.assertEqual(h1, h2)
-
-    @staticmethod
-    def test_print():
-        name = random.choice(HOTEL_NAMES)
-        h = set_hotel(name=name)
-
-        print(h)
-
 
 def set_hotel(name: str
               ) -> hotel.Hotel:
@@ -132,9 +133,7 @@ def set_hotel(name: str
     :param name: id of the cell to create
     :return Hotel with given name
     """
-    config = EasyDict()
-    config.hotel_dict = cfg.get_config_from_json(HOTEL_JSON_PATH)
-    config.hotel_upgrade_type_dict = cfg.get_config_from_json(HOTEL_UPGRADE_TYPE_JSON_PATH)
+    config = cfg.process_config(None)
 
     return hotel.Hotel(name=name, config=config)
 

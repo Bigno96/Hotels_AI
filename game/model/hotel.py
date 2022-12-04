@@ -4,7 +4,6 @@ Contains Hotel class and all methods to manipulate a hotel instance
 
 from prettytable import PrettyTable
 from easydict import EasyDict
-from typing import Optional, List
 
 
 class Hotel:
@@ -24,12 +23,15 @@ class Hotel:
         self.__name: str = name
         self.__hotel_config: EasyDict = config.hotel_dict[name]
         self.__hotel_upgrade_type_dict: EasyDict = config.hotel_upgrade_type_dict
-        self.__owner: Optional[str] = None
+        self.__owner: str or None = None
         self.__star_level: int = 0
         self.__last_upgrade_idx: int = -1      # keep track of last upgrade
 
     def __eq__(self, other):
         return self.__name == other.get_name()
+
+    def __hash__(self):
+        return hash(self.__name)
 
     def __repr__(self):
         h = self.__hotel_config
@@ -75,7 +77,7 @@ class Hotel:
         """
         return self.__name
 
-    def get_owner(self) -> Optional[str]:
+    def get_owner(self) -> str or None:
         """
         :return: return Player object who owns the property, None if no player
         """
@@ -151,7 +153,7 @@ class Hotel:
                  and value != 'None'}    # filter upgrades unavailable
         )
 
-    def get_payments(self) -> List[List[int]]:
+    def get_payments(self) -> list[list[int]]:
         """
         Return the payment matrix
         Row = number of stars, column = number of nights

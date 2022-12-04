@@ -1,14 +1,13 @@
 """
 Testing module for Cell class
 """
-
+import random
 import unittest
 import unittest.mock as mock
 
 import game.model.cell as cell
 import utils.config as cfg
 
-from easydict import EasyDict
 from random import randint
 
 CELL_JSON_PATH = "D:/Hotels_AI/configs/cell.json"
@@ -31,6 +30,24 @@ class CellTest(unittest.TestCase):
             self.assertIsInstance(c.get_hotels_near(), list)
             self.assertIsNone(c.get_entrance())
             self.assertFalse(c.is_occupied())
+
+    @staticmethod
+    def test_print():
+        i = randint(-1, 30)
+        c = set_cell(i)
+        print(c)
+
+    def test_hash_eq(self):
+        # test eq
+        i, j = random.sample(range(-1, 31), k=2)
+        c_i = set_cell(i)
+        c_j = set_cell(j)
+        self.assertEqual(c_i, c_i)
+        self.assertNotEqual(c_i, c_j)
+
+        # test hash
+        self.assertEqual(hash(c_i), hash(c_i))
+        self.assertNotEqual(hash(c_i), hash(c_j))
 
     def test_entrance(self):
         i = randint(-1, 30)
@@ -63,8 +80,7 @@ def set_cell(idx: int
     :param idx: id of the cell to create
     :return Cell with given ID
     """
-    config = EasyDict()
-    config.cell_dict = cfg.get_config_from_json(CELL_JSON_PATH)
+    config = cfg.process_config(None)
 
     return cell.Cell(ID=idx, config=config)
 
