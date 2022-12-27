@@ -17,11 +17,11 @@ class Player(ABC):
     def __init__(self,
                  name: str):
         """
-        :param name: unique id of the player
+        :param: name: unique id of the player
         """
-        self.__name = name
-        self.__money = 12000    # standard start of the game
-        self.__property_list: dict[str:hotel.Hotel] = dict()
+        self.__name: str = name
+        self.__money: int = 12000    # standard start of the game
+        self.__property_list: dict[str: hotel.Hotel] = dict()
 
     def __eq__(self, other):
         return self.__name == other.get_name()
@@ -29,11 +29,16 @@ class Player(ABC):
     def __hash__(self):
         return hash(self.__name)
 
-    @abstractmethod
     def __repr__(self) -> str:
-        """
-        :return: internal representation of the object
-        """
+        property_list = [f'({prop.get_name()}, {prop.get_star_level()}*)'
+                         for prop in list(self.get_property_list().values())]
+        _repr = (
+            f'Player: {self.get_name()}\n'
+            f'\tMoney: {self.get_money()}\n'
+            f'\tProperty List: {property_list}\n'
+        )
+
+        return _repr
 
     @abstractmethod
     def set_interface(self) -> i_f.PlayerInterface:
@@ -42,6 +47,9 @@ class Player(ABC):
         """
 
     def get_name(self) -> str:
+        """
+        :return: name of the player
+        """
         return self.__name
 
     @abstractmethod
@@ -51,6 +59,9 @@ class Player(ABC):
         """
 
     def get_money(self) -> int:
+        """
+        :return: money owned by the player
+        """
         return self.__money
 
     def is_broke(self) -> bool:
@@ -63,29 +74,39 @@ class Player(ABC):
                      amount: int
                      ) -> None:
         """
-        :param amount: int, negative -> removing money, positive -> adding money
+        :param: amount: int, negative -> removing money, positive -> adding money
         """
         self.__money += amount
 
     def get_property_list(self) -> dict[str:hotel.Hotel]:
+        """
+        :return: property list of the player
+        """
         return self.__property_list
 
     def add_property(self,
                      h: hotel.Hotel
                      ) -> None:
         """
-        :param h: hotel to add as a player property
+        :param: h: hotel to add as a player property
         """
         self.__property_list[h.get_name()] = h
 
     def remove_property(self,
-                        h: hotel.Hotel
+                        h: hotel.Hotel = None,
+                        name: str = None
                         ) -> None:
         """
+        In case both parameters are specified, hotel.get_name overrides name
         :param h: hotel to remove from player's properties
+        :param name: name of the hotel to remove from player's properties
+        :raise AssertionError if neither hotel nor name are specified
         """
-        if h.get_name() in self.__property_list.keys():
-            del self.__property_list[h.get_name()]
+        assert h or name, f'No property specified'
+        if h:
+            name = h.get_name()
+        if name in self.__property_list.keys():
+            del self.__property_list[name]
 
 
 class HumanPlayer(Player):
@@ -105,12 +126,8 @@ class HumanPlayer(Player):
         return self.__ui
 
     def __repr__(self) -> str:
-        _repr = (
-            f'Player: {self.get_name()}\n'
-            f'\tType: Human\n'
-            f'\tMoney: {self.get_money()}\n'
-            f'\tProperty List: {self.get_property_list()}'
-        )
+        _repr = super(HumanPlayer, self).__repr__()
+        _repr += f'\tType: Human\n'
         return _repr
 
 
@@ -131,10 +148,6 @@ class AiPlayer(Player):
         return self.__ui
 
     def __repr__(self) -> str:
-        _repr = (
-            f'Player: {self.get_name()}\n'
-            f'\tType: AI\n'
-            f'\tMoney: {self.get_money()}\n'
-            f'\tProperty List: {self.get_property_list()}'
-        )
+        _repr = super(AiPlayer, self).__repr__()
+        _repr += f'\tType: AI\n'
         return _repr

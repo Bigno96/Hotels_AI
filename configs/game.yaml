@@ -1,0 +1,14 @@
+n_players: 3
+player_list:
+
+- name: Berth
+  is_ai: true
+  color: Yellow
+
+- name: Trump
+  is_ai: false
+  color: Red
+
+- name: Jorge
+  is_ai: false
+  color: Cyan

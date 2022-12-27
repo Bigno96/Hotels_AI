@@ -8,18 +8,20 @@ import random
 import game.model.hotel as hotel
 import utils.config as cfg
 
-from unit_testing import HOTEL_JSON_PATH, HOTEL_NAMES, HOTEL_UPGRADE_TYPE_JSON_PATH
+from easydict import EasyDict
+
+from unit_testing import HOTEL_YAML_PATH, HOTEL_NAMES, HOTEL_UPGRADE_TYPE_YAML_PATH
 
 
 class HotelTest(unittest.TestCase):
 
     def test_init(self):
-        hotel_dict = cfg.get_config_from_json(HOTEL_JSON_PATH)
+        hotel_dict = cfg.get_config_from_yaml(HOTEL_YAML_PATH)
 
         for name in HOTEL_NAMES:
 
             h = set_hotel(name=name)
-            h_json = hotel_dict[name]
+            h_json = vars(hotel_dict)[name]
 
             h_copy = set_hotel(name=name)
             self.assertEqual(h, h_copy)
@@ -66,8 +68,8 @@ class HotelTest(unittest.TestCase):
         self.assertIsNone(h.get_owner())
 
     def test_upgrades(self):
-        hotel_dict = cfg.get_config_from_json(HOTEL_JSON_PATH)
-        hotel_upgrade_type_dict = cfg.get_config_from_json(HOTEL_UPGRADE_TYPE_JSON_PATH)
+        hotel_dict = cfg.get_config_from_yaml(HOTEL_YAML_PATH)
+        hotel_upgrade_type_dict = cfg.get_config_from_yaml(HOTEL_UPGRADE_TYPE_YAML_PATH)
 
         for _ in range(100):
             up_type = random.randint(0, 5)
@@ -108,9 +110,9 @@ class HotelTest(unittest.TestCase):
                 self.assertIsNotNone(h_json.costs[key])
 
     def test_payments(self):
-        hotel_dict = cfg.get_config_from_json(HOTEL_JSON_PATH)
+        hotel_dict = cfg.get_config_from_yaml(HOTEL_YAML_PATH)
 
-        for _ in range(1000):
+        for _ in range(100):
             up_type = random.randint(0, 5)
             name = random.choice(HOTEL_NAMES)
             h = set_hotel(name=name)
@@ -131,8 +133,7 @@ def set_hotel(name: str
     :param name: id of the cell to create
     :return Hotel with given name
     """
-    config = cfg.process_config(None)
-
+    config = cfg.process_config(EasyDict())
     return hotel.Hotel(name=name, config=config)
 
 

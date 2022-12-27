@@ -22,9 +22,9 @@ class Hotel:
         """
         self.__name: str = name
         self.__hotel_config: EasyDict = config.hotel_dict[name]
-        self.__hotel_upgrade_type_dict: EasyDict[str:int] = config.hotel_upgrade_type_dict
-        self.__hotel_upgrade_type_dict_reverse: dict[int:str] = {  # reverse dictionary for easier access on repr
-            value:key
+        self.__hotel_upgrade_type_dict: dict[str: int] = config.hotel_upgrade_type_dict
+        self.__hotel_upgrade_type_dict_reverse: dict[int: str] = {  # reverse dictionary for easier access on repr
+            value: key
             for key, value in self.__hotel_upgrade_type_dict.items()
         }
         self.__owner: str or None = None
@@ -87,7 +87,7 @@ class Hotel:
                   player_name: str
                   ) -> None:
         """
-        :param player_name: name of the player who is currently owning the hotel
+        :param: player_name: name of the player who is currently owning the hotel
         """
         self.__owner = player_name
 
@@ -144,13 +144,15 @@ class Hotel:
         :return: dictionary of costs
         """
         return EasyDict(
-                {key: value
-                 for key, value
-                 in self.__hotel_config.costs.items()      # loop over costs dictionary
-                 # anything in upgrade_type_dict with value > last_upgrade_idx can be seen
-                 # e.g., if last_upgrade idx = 3 --> "IV_dependance" (4) and "facilities" (5) can be seen
-                 if int(self.__hotel_upgrade_type_dict[key]) > self.__last_upgrade_idx
-                 and value != 'None'}    # filter upgrades unavailable
+            {
+                key: value
+                for key, value
+                in self.__hotel_config.costs.items()  # loop over costs dictionary
+                # anything in upgrade_type_dict with value > last_upgrade_idx can be seen
+                # e.g., if last_upgrade idx = 3 --> "IV_dependance" (4) and "facilities" (5) can be seen
+                if value != 'None' and  # filter upgrades unavailable
+                   int(self.__hotel_upgrade_type_dict[key]) > self.__last_upgrade_idx
+            }
         )
 
     def get_payments(self) -> list[list[int]]:

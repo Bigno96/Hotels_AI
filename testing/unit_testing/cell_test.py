@@ -9,13 +9,14 @@ import game.model.cell as cell
 import utils.config as cfg
 
 from random import randint
-from unit_testing import CELL_JSON_PATH
+from easydict import EasyDict
+from unit_testing import CELL_YAML_PATH
 
 
 class CellTest(unittest.TestCase):
 
     def test_init(self):
-        cell_dict = cfg.get_config_from_json(CELL_JSON_PATH)
+        cell_dict = cfg.get_config_from_yaml(CELL_YAML_PATH)
 
         # test initialization of all cells
         for i in range(-1, 31): # last cell id is 30
@@ -24,8 +25,8 @@ class CellTest(unittest.TestCase):
             c_json = cell_dict[str(i)]
 
             self.assertEqual(c.get_id(), i)
-            self.assertEqual(c.get_type(), c_json["type"])
-            self.assertEqual(c.get_hotels_near(), c_json["hotels_near"])
+            self.assertEqual(c.get_type(), c_json.type)
+            self.assertEqual(c.get_hotels_near(), c_json.hotels_near)
             self.assertIsInstance(c.get_hotels_near(), list)
             self.assertIsNone(c.get_entrance())
             self.assertFalse(c.is_occupied())
@@ -79,9 +80,8 @@ def set_cell(idx: int
     :param idx: id of the cell to create
     :return Cell with given ID
     """
-    config = cfg.process_config(None)
-
-    return cell.Cell(ID=idx, config=config)
+    config = cfg.process_config(EasyDict())
+    return cell.Cell(cell_id=idx, config=config)
 
 
 if __name__ == '__main__':

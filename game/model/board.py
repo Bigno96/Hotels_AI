@@ -6,6 +6,7 @@ import game.model.cell as cell
 import game.model.player as player
 
 from easydict import EasyDict
+from typing import Iterable
 
 
 class Board:
@@ -15,18 +16,25 @@ class Board:
 
     def __init__(self,
                  config: EasyDict,
-                 player_list: list[player.Player]):
+                 player_list: Iterable[player.Player]):
         """
         :param config: global config dictionary
         :param player_list: list of players in the game
         """
-        self.__cell_list: dict[int:cell.Cell] = {
-            i: cell.Cell(ID=i, config=config)
+        self.__cell_list: dict[int: cell.Cell] = {
+            i: cell.Cell(cell_id=i, config=config)
             for i in range(-1, 31)}   # last cell id is 30
-        self.__position_trace : dict[player.Player, cell.Cell] = {
+        self.__position_trace: dict[player.Player: cell.Cell] = {
             p: self.__cell_list[-1]
             for p in player_list
         }
+
+    def __repr__(self):
+        _repr = 'Board: \n'
+        for pl, pos in self.__position_trace.items():
+            _repr += f'\t{pl.get_name()} | Cell: {pos.get_id()}\n'
+
+        return _repr
 
     def find_cell(self,
                   cell_id: int
@@ -39,20 +47,20 @@ class Board:
         """
         if cell_id in self.__cell_list.keys():
             return self.__cell_list[cell_id]
-        raise IndexError
+        raise IndexError(f'Could not find Cell {cell_id} in the board')
 
     def find_player_pos(self,
                         p: player.Player
                         ) -> cell.Cell:
         """
         Find the cell the player is standing in
-        :param p: Player to find its position
+        :param p: Player to find
         :return: Cell instance
         :raise IndexError if the player is not in the board
         """
         if p in self.__position_trace.keys():
             return self.__position_trace[p]
-        raise IndexError
+        raise IndexError(f'Could not find Player {p.get_name()} in the board')
 
     def remove_player(self,
                       p: player.Player
@@ -63,7 +71,7 @@ class Board:
         :raise IndexError if the player is not in the board
         """
         if p not in self.__position_trace.keys():
-            raise IndexError
+            raise IndexError(f'Could not find Player {p.get_name()} in the board')
         del self.__position_trace[p]
 
     def move_player(self,
@@ -83,7 +91,7 @@ class Board:
         :raise IndexError if the player is not in the board
         """
         if p not in self.__position_trace.keys():
-            raise IndexError    # player not found
+            raise IndexError(f'Could not find Player {p.get_name()} in the board')
         c = self.__position_trace[p]
 
         # move to dest
@@ -93,8 +101,6 @@ class Board:
 
         # else, use delta
         # first get new pos
-        if c.get_id() == -1:
-            delta -= 1  # accounts for starting position idx = -1, delta only positive here
         new_cell_idx = (c.get_id() + delta) % 31    # modulo takes care of the sign of delta
         new_cell = self.__cell_list[new_cell_idx]
         # second, move to cell

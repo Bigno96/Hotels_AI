@@ -1,7 +1,9 @@
+import random
 import unittest
 import unittest.mock as mock
 
 import game.model.player as player
+from game.model.hotel import Hotel
 import game.view.player_interface as i_f
 
 
@@ -26,6 +28,12 @@ class PlayerTest(unittest.TestCase):
     def test_print():
         human_pl = player.HumanPlayer(name='human')
         ai_pl = player.AiPlayer(name='AI')
+
+        hotel = mock.Mock(spec=Hotel)
+        hotel.get_name.return_value = 'test_hotel'
+        hotel.get_star_level.return_value = str(random.randint(0, 5))
+        human_pl.add_property(h=hotel)
+
         print(human_pl)
         print(ai_pl)
 
@@ -64,10 +72,13 @@ class PlayerTest(unittest.TestCase):
 
         self.assertFalse(pl.get_property_list())
 
-        hotel = mock.Mock()
+        hotel = mock.Mock(spec=Hotel)
         hotel.get_name.return_value = 'test_hotel'
 
         pl.remove_property(h=hotel)
+        self.assertFalse(pl.get_property_list())
+
+        pl.remove_property(name='test_hotel')
         self.assertFalse(pl.get_property_list())
 
         pl.add_property(h=hotel)
@@ -75,6 +86,15 @@ class PlayerTest(unittest.TestCase):
 
         pl.remove_property(h=hotel)
         self.assertFalse(pl.get_property_list())
+
+        pl.add_property(h=hotel)
+        self.assertIn(hotel, pl.get_property_list().values())
+
+        pl.remove_property(name='test_hotel')
+        self.assertFalse(pl.get_property_list())
+
+        self.assertRaises(AssertionError,
+                          lambda: pl.remove_property())
 
 
 if __name__ == '__main__':

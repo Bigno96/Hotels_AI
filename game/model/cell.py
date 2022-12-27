@@ -14,17 +14,17 @@ class Cell:
     """
 
     def __init__(self,
-                 ID: int,
+                 cell_id: int,
                  config: EasyDict):
         """
         Build Cell reading configuration
-        :param ID: ID of the cell
+        :param cell_id: ID of the cell
         :param config: global config dictionary
         """
-        self.__id: int = ID
-        self.__config = config
+        self.__id: int = cell_id
+        self.__config: EasyDict = config
 
-        cell = config.cell_dict[str(ID)]
+        cell = config.cell_dict[str(cell_id)]
         self.__type: int = cell.type
         self.__hotels_near: list[str] = cell.hotels_near
 
@@ -97,5 +97,3 @@ class Cell:
         Set occupied = False when a player leaves the cell
         """
         self.__occupied = False
-
-
